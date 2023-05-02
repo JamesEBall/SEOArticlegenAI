@@ -27,7 +27,7 @@ Each row represents a category, an object, and its type. The script generates a 
 These are then keyed into statements to create a semantic sequence:
 
 ```
-e.g. Based on the above statement "BikeBrands	{bikebrand} bike review: Pros and cons	question"
+e.g. Based on the above SEO query "{bikebrand} bike review: Pros and cons"
 
 The above produces the following permutations:
 - Orbea bike review: Pros and cons
