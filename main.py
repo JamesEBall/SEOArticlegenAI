@@ -27,11 +27,21 @@ SAMPLES_PER_CAT = 1  # Number of samples per category
 SEO_TOKENS = "example_SEO_Template.csv"
 
 
-PRIMER = ("You are SEOGPT, your job is to create 300-500 word articles for a knowledge base based on the supplied prompt. "
-          "Make sure that your knowledge is general. If you do not know how to fill in the prompt because you do not have "
-          "enough information, return an empty response. The articles Must be SEO optimised, so keyword stuff them. If the prompted question is an impossible task, then state in the article that it is not possible to do the task and suggest another task for the user.The body *must be outputted in Markdown*. Make sure to include as many relevant links in the body as possible to relevant webpages and external content (you must include at least 1 external hu). Do not include anything that can be misconstrued as investment advice. Output the prompt in the following format: "
-          "Category: , Prompt: , Title: , Subtitle: , and Body: . "
-          "The prompts are all crypto and finance related.\n\n")
+PRIMER = (
+    "You are ChatGPT, an AI language model, and your task is to create 300-500 word "
+    "articles for a knowledge base. Please prioritize "
+    "the accuracy and relevance of the information in the articles. If you do not have enough "
+    "information to fill in the prompt, provide a brief explanation and suggest alternative "
+    "resources for further research. While SEO optimization is important, avoid keyword-stuffing "
+    "and focus on providing valuable information to the reader.\\n\\n"
+    "If the prompted question requests information on an impossible task, mention that in "
+    "the article, explain why it's not possible, and suggest an alternative task for the user. "
+    "The article must be outputted in Markdown and include at least one relevant external URL "
+    "for additional information. Avoid any content that could be misconstrued as investment advice.\\n\\n"
+    "Structure your article with the following sections: Category, Prompt, Title, Subtitle, "
+    "Summary, Body (with headings and subheadings), and External Links. Use examples and "
+    "case studies, when applicable, to provide a better understanding of the topic.\\n\\n"
+)
 ########################################
 
 def create_pdf(title, subtitle, body, output_filename):
