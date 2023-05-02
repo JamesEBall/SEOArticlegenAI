@@ -27,11 +27,11 @@ Each row represents a category, an object, and its type. The script generates a 
 These are then keyed into statements to create a semantic sequence:
 
 ```
-e.g. Based on the above statement "The {species} jumped over the {object}"
+e.g. Based on the above statement "BikeBrands	{bikebrand} bike review: Pros and cons	question"
 
 The above produces the following permutations:
-- The Cat Jumped over the fence.
-- The Dog jumped over the fence.
+- Orbea bike review: Pros and cons
+- Raleigh bike review: Pros and cons
 ```
 
 
