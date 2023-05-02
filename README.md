@@ -1,5 +1,5 @@
 # SEO Article Generator
-This project is a tool to automatically generate 10's to 100's of thousand SEO-optimized articles using OpenAI's Davinci Model. It reads prompts from a CSV file, sends the prompts to the OpenAI API, and processes the generated responses into structured articles, which are then saved to a separate CSV file.
+This project is a tool to automatically generate 10's to 100's of thousands of SEO-optimized articles using OpenAI's Davinci Model. It reads prompts from a CSV file, sends the prompts to the OpenAI API, and processes the generated responses into structured articles, which are then saved to a separate CSV file.
 
 ## How it works
 The script has two main components:
