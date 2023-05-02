@@ -3,7 +3,6 @@ aiohttp==3.8.1
 Markdown==3.4.3
 openai==0.27.2
 python-dotenv==1.0.0
-reportlab==3.6.13
 tenacity==8.2.2
 tqdm==4.64.0
 xhtml2pdf==0.2.10
