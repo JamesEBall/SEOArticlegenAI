@@ -195,7 +195,7 @@ async def main():
             input_rows = input_df[input_df['prompt'].apply(lambda x: x not in existing_prompts)].to_numpy()
 
             # Process prompts that do not exist in the output CSV
-            all_tasks = [process_prompt(session, writer, row[0], row[1]) for row in input_rows if GENERATE_PDFS]
+            all_tasks = [process_prompt(session, writer, row[0], row[1]) for row in input_rows]
 
             # Process tasks in batches of 60
             batch_size = 60
