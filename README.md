@@ -41,7 +41,7 @@ The Davinci model processes the prompt and generates a response. The script then
 1. Set up your OpenAI API key and organization ID as environment variables. You can use a .env file for this purpose:
 ```
 OPENAI_API_KEY=your_openai_api_key
-OPENAI_ORGANIZATION_ID=your_openai_organization_id
+OPENAI_ORGANIZATION_ID=your_openai_organization_id (**Optional**)
 ```
 2. Modify the USE_SAMPLE_PROMPTS variable in the main script to control whether to use the input file or sample prompts:
 ```
