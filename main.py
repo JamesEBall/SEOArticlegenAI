@@ -42,30 +42,34 @@ PRIMER = ("You are SEOGPT, your job is to create 300-500 word articles for a kno
 ########################################
 
 def create_pdf(title, subtitle, body, output_filename):
-    doc = SimpleDocTemplate(output_filename, pagesize=letter)
-    styles = getSampleStyleSheet()
-    title_style = styles["Heading1"]
-    subtitle_style = styles["Heading2"]
+    styles = """
+        <style>
+            h1 {
+                font-size: 24pt;
+            }
+            h2 {
+                font-size: 18pt;
+            }
+            p, li {
+                font-size: 12pt;
+                text-align: justify;
+            }
+        </style>
+    """
 
-    flowables = []
-
-    flowables.append(Paragraph(title, title_style))
-    flowables.append(Spacer(1, 12))
-    flowables.append(Paragraph(subtitle, subtitle_style))
-    flowables.append(Spacer(1, 12))
-
-    # Convert markdown to HTML
     body_html = markdown(body)
+    html = f"""
+        {styles}
+        <h1>{title}</h1>
+        <h2>{subtitle}</h2>
+        {body_html}
+    """
 
-    # Convert HTML to PDF flowables
-    body_pdf = BytesIO()
-    pisa.CreatePDF(BytesIO(body_html.encode()), body_pdf)
-    body_pdf.seek(0)
+    with open(output_filename, "wb") as pdf_file:
+        pisa_status = pisa.CreatePDF(html, dest=pdf_file)
 
-    # Add PDF flowables to the document
-    flowables.extend(pisa.getImages(body_pdf))
-
-    doc.build(flowables)
+    if pisa_status.err:
+        print(f"Error creating PDF file: {output_filename}")
   
 def fetch_openai_completion_async(model, prompt, temperature, max_tokens, top_p, frequency_penalty, presence_penalty):
     return openai.Completion.create(
