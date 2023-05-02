@@ -50,9 +50,12 @@ The Davinci model processes the prompt and generates a response. The script then
 OPENAI_API_KEY=your_openai_api_key
 OPENAI_ORGANIZATION_ID=your_openai_organization_id (**Optional**)
 ```
-2. Modify the USE_SAMPLE_PROMPTS variable in the main script to control whether to use the input file or sample prompts:
+2. Setup variables in the main script.
 ```
 USE_SAMPLE_PROMPTS = True  # Set to False to use input file
+GENERATE_PDFS = True  # Set to False to disable PDF generation
+SAMPLES_PER_CAT = 1  # Number of samples per category in sample mode
+SEO_TOKENS = "example_SEO_Template.csv" # Name of the token input file (see example).
 ```
 3. Run the main script:
 ```
