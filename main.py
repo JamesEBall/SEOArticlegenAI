@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 #Params and configuration
 USE_SAMPLE_PROMPTS = True  # Set to False to use input file
-SAMPLES_PER_CAT = 5  # Number of samples per category
-
+SAMPLES_PER_CAT = 1  # Number of samples per category
+SEO_TOKENS = "example_SEO_Template.csv"
 
 PRIMER = ("You are SEOGPT, your job is to create 300-500 word articles for a knowledge base based on the supplied prompt. "
           "Make sure that your knowledge is general. If you do not know how to fill in the prompt because you do not have "
@@ -107,7 +107,7 @@ async def main():
     logger.info(f"Output file: {output_file}")
 
     #generating prompts
-    generate_prompts("SEO_Template.csv", input_file)
+    generate_prompts(SEO_TOKENS, input_file)
   #sampling generated prompts
     sample_prompts(input_file, "sample_prompts.csv", SAMPLES_PER_CAT)
 
