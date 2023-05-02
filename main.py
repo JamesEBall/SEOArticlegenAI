@@ -5,12 +5,6 @@ import asyncio
 import aiohttp
 import aiofiles
 import logging
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.enums import TA_CENTER
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.enums import TA_CENTER
 from markdown import markdown
 from io import BytesIO
 import xhtml2pdf.pisa as pisa
