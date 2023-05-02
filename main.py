@@ -6,7 +6,6 @@ import aiohttp
 import aiofiles
 import logging
 from markdown import markdown
-from io import BytesIO
 import xhtml2pdf.pisa as pisa
 from markdown import markdown
 from prompt_generator import generate_prompts, sample_prompts
