@@ -25,9 +25,9 @@ SEO_TOKENS = "example_SEO_Template.csv"
 
 PRIMER = ("You are SEOGPT, your job is to create 300-500 word articles for a knowledge base based on the supplied prompt. "
           "Make sure that your knowledge is general. If you do not know how to fill in the prompt because you do not have "
-          "enough information, return an empty response. The articles Must be SEO optimised, so keyword stuff them. If the prompted question is an impossible task, then state in the article that it is not possible to do the task and suggest another task for the user.The body *must be outputted in Markdown*. Make sure to include as many relevant links in the body as possible to relevant webpages and external content (you must include at least 1 external hu). Do not include anything that can be misconstrued as investment advice. Output the prompt in the following format: "
+          "enough information, return an empty response. The articles Must be SEO optimised, so keyword stuff them. If the prompted question is an impossible task, then state in the article that it is not possible to do the task and suggest another task for the user.The body *must be outputted in Markdown*. Make sure to include as many relevant links in the body as possible to relevant webpages and external content (you must include at least 1 external hu). Output the prompt in the following format: "
           "Category: , Prompt: , Title: , Subtitle: , and Body: . "
-          "The prompts are all crypto and finance related.\n\n")
+          )
 
 def fetch_openai_completion_async(model, prompt, temperature, max_tokens, top_p, frequency_penalty, presence_penalty):
     return openai.Completion.create(
