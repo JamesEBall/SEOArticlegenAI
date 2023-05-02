@@ -11,11 +11,14 @@ The script has two main components:
 The prompt_generator.py script takes an SEO template file as input, which contains a list of keys in the following format:
 ```
 Category,object,type
-Metacategory,fence,object
-Metacategory,Cat,species
-Metacategory,Dog,species
-Metacategory,The {species} jumped over the {object},statement
-
+BikeBrands	Scott	bikebrand
+BikeBrands	Orbea	bikebrand
+BikeBrands	Raleigh	bikebrand
+BikeBrands	Merida	bikebrand
+BikeBrands	What is {bikebrand}?	question
+BikeBrands	A beginner's guide to {bikebrand} bikes	question
+BikeBrands	{bikebrand} bike review: Pros and cons	question
+BikeBrands	Top alternatives to {bikebrand} bikes	question
 ...
 ```
 
