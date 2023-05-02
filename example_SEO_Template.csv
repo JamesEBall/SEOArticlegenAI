@@ -1,0 +1,27 @@
+Category,object,type
+BikeBrands,Trek,bikebrand
+BikeBrands,Specialized,bikebrand
+BikeBrands,Cannondale,bikebrand
+BikeBrands,Giant,bikebrand
+BikeBrands,Scott,bikebrand
+BikeBrands,Orbea,bikebrand
+BikeBrands,Raleigh,bikebrand
+BikeBrands,Merida,bikebrand
+BikeBrands,What is {bikebrand}?,question
+BikeBrands,A beginner's guide to {bikebrand} bikes,question
+BikeBrands,{bikebrand} bike review: Pros and cons,question
+BikeBrands,Top alternatives to {bikebrand} bikes,question
+BikeAccessories,Bike helmet,accessory
+BikeAccessories,Bike lock,accessory
+BikeAccessories,Bike light,accessory
+BikeAccessories,Bike pump,accessory
+BikeAccessories,How to choose the perfect {accessory}?,question
+BikeAccessories,{accessory} buying guide: Top considerations,question
+BikeAccessories,5 best {accessory} options for cyclists,question
+BikeMaintenance,Tire repair,maintenance
+BikeMaintenance,Brake adjustment,maintenance
+BikeMaintenance,Chain cleaning,maintenance
+BikeMaintenance,Gear tuning,maintenance
+BikeMaintenance,How to perform a {maintenance} on your bike?,question
+BikeMaintenance,{maintenance} tips for bike owners,question
+BikeMaintenance,Why regular {maintenance} is crucial for your bike's lifespan?,question
