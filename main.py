@@ -7,11 +7,11 @@ import aiofiles
 import logging
 from markdown import markdown
 import xhtml2pdf.pisa as pisa
-from markdown import markdown
 from prompt_generator import generate_prompts, sample_prompts
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from dotenv import load_dotenv
 import openai
+import pandas as pd
 
 load_dotenv()
 openai.organization_id = os.environ['OPENAI_ORGANIZATION_ID']
@@ -23,9 +23,9 @@ logger = logging.getLogger(__name__)
 ########Params and configuration########
 USE_SAMPLE_PROMPTS = True  # Set to False to use input file
 GENERATE_PDFS = True  # Set to False to disable PDF generation
-SAMPLES_PER_CAT = 1  # Number of samples per category
+SAMPLES_PER_CAT = 500  # Number of samples per category
 SEO_TOKENS = "example_SEO_Template.csv"
-
+TOKEN_LENGTH = 3000  # Max size of the generated prompts in tokens
 
 PRIMER = (
     "You are ChatGPT, an AI language model, and your task is to create 300-500 word "
@@ -52,6 +52,12 @@ def create_pdf(title, subtitle, body, output_filename):
             }
             h2 {
                 font-size: 18pt;
+            }
+            h3 {
+                font-size: 16pt;
+            }
+            h4 {
+                font-size: 15pt;
             }
             p, li {
                 font-size: 12pt;
@@ -98,7 +104,7 @@ async def fetch_prompt(session, category, prompt):
             "text-davinci-003",
             PRIMER + prompt,
             0.35,
-            800,
+            TOKEN_LENGTH,
             1.0,
             0.3,
             0.1
@@ -109,18 +115,6 @@ async def fetch_prompt(session, category, prompt):
     return category, prompt, response['choices'][0]['text'].strip()
 
 
-
-
-# Update the main function with additional logging
-async def main():
-    async with aiohttp.ClientSession() as session:
-        tasks = []
-        for category, prompt_list in PROMPTS.items():
-            for prompt in prompt_list:
-                print(f"Creating task for: {category} - {prompt}")
-                tasks.append(asyncio.ensure_future(process_prompt(session, category, prompt)))
-        print("All tasks created")
-        await asyncio.gather(*tasks)
 
 
 async def process_prompt(session, writer, category, prompt):
@@ -147,42 +141,70 @@ async def process_prompt(session, writer, category, prompt):
         pdf_filename = f"Articles/{title}.pdf"
         create_pdf(title, subtitle, body, pdf_filename)
 
+def clean_csv_file(file_path):
+    with open(file_path, 'r', encoding='utf-8', errors='replace') as file:
+        content = file.read()
+        content = content.replace('\x00', '')  # Remove null characters
+
+    with open(file_path, 'w', encoding='utf-8', errors='replace') as file:
+        file.write(content)
+      
+def read_csv_file(file_path):
+    return pd.read_csv(file_path, encoding='utf-8', dtype=str, on_bad_lines='skip')
+
 
 
 async def main():
     logger.info("Starting up")
     # Setup CSV file
-    
+
     input_file = 'output_prompts.csv'
     output_file = 'output_results.csv'
     logger.info(f"Input file: {input_file}")
     logger.info(f"Output file: {output_file}")
 
-    #generating prompts
+    # Generating prompts
     generate_prompts(SEO_TOKENS, input_file)
-  #sampling generated prompts
+    # Sampling generated prompts
     sample_prompts(input_file, "sample_prompts.csv", SAMPLES_PER_CAT)
 
-    # Modify this block
     if USE_SAMPLE_PROMPTS:
         input_file = 'sample_prompts.csv'
     else:
         input_file = input_file
-    
+
+    # Clean the input CSV file before processing
+    clean_csv_file(input_file)
+
+    # Load existing prompts from output CSV
+    existing_prompts = set()
+    if os.path.exists(output_file):
+        existing_df = read_csv_file(output_file)
+        existing_prompts.update(existing_df['prompt'].values)  # Add prompt to the set
+
     async with aiohttp.ClientSession() as session:
-        async with aiofiles.open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
+        # Open output CSV in append mode
+        async with aiofiles.open(output_file, 'a', newline='', encoding='utf-8', errors='replace') as csvfile:
             writer = csv.writer(csvfile)
-            await writer.writerow(['category', 'prompt', 'title', 'subtitle', 'body'])
 
-            with open(input_file, 'r', encoding='utf-8') as csvfile:
-                reader = csv.reader(csvfile)
-                next(reader)  # skip the header
+            # Write header only if the file is new (empty)
+            if not existing_prompts:
+                await writer.writerow(['category', 'prompt', 'title', 'subtitle', 'body'])
 
-                tasks = [process_prompt(session, writer, row[0], row[1]) for row in reader if GENERATE_PDFS]
+            input_df = read_csv_file(input_file)
+            input_rows = input_df[input_df['prompt'].apply(lambda x: x not in existing_prompts)].to_numpy()
+
+            # Process prompts that do not exist in the output CSV
+            all_tasks = [process_prompt(session, writer, row[0], row[1]) for row in input_rows if GENERATE_PDFS]
+
+            # Process tasks in batches of 60
+            batch_size = 60
+            for i in range(0, len(all_tasks), batch_size):
+                tasks = all_tasks[i:i+batch_size]
+                logger.info(f"Processing batch {i // batch_size + 1}")
                 await asyncio.gather(*tasks)
 
-    logger.info(f"Finished processing {len(tasks)} prompts in {input_file}. Results saved to {output_file}")
-    
+    logger.info(f"Finished processing {len(all_tasks)} prompts in {input_file}. Results saved to {output_file}")
 
 if __name__ == '__main__':
     asyncio.run(main())
