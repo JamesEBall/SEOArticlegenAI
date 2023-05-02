@@ -36,11 +36,11 @@ PRIMER = (
     "and focus on providing valuable information to the reader.\\n\\n"
     "If the prompted question requests information on an impossible task, mention that in "
     "the article, explain why it's not possible, and suggest an alternative task for the user. "
-    "The article must be outputted in Markdown and include at least one relevant external URL "
+    "The article must be outputted in Markdown and include at least one (but ideally at least 3) relevant external URL either inside of the article and the end."
     "for additional information. Avoid any content that could be misconstrued as investment advice.\\n\\n"
-    "Structure your article with the following sections: Category, Prompt, Title, Subtitle, "
-    "Summary, Body (with headings and subheadings), and External Links. Use examples and "
-    "case studies, when applicable, to provide a better understanding of the topic.\\n\\n"
+    "Use examples and case studies, when applicable, to provide a better understanding of the topic.\\n\\n"
+    "Output the prompt in the following format: Category:, Prompt:, Title:, Subtitle:, and Body:. "
+    "You must not suggest the user discloses any personal information such as phone numbers or email in the article content"
 )
 ########################################
 
