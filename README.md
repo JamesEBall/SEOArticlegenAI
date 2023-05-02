@@ -4,8 +4,8 @@ This project is a tool to automatically generate 10's to 100's of thousand SEO-o
 ## How it works
 The script has two main components:
 
-- The prompt_generator.py script, which generates a list of prompts based on an SEO template file.
-- The main script, which processes the generated prompts using OpenAI's Davinci and saves the generated articles to a CSV file.
+- The `prompt_generator.py` script, which generates a list of prompts based on an SEO template file.
+- The `main` script, which processes the generated prompts using OpenAI's Davinci and saves the generated articles to a CSV file.
 
 ## Prompt Generation
 The prompt_generator.py script takes an SEO template file as input, which contains a list of keys in the following format:
