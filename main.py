@@ -1,11 +1,20 @@
 import os
 import csv
-import json
 import re
 import asyncio
 import aiohttp
 import aiofiles
 import logging
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.enums import TA_CENTER
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER
+from markdown import markdown
+from io import BytesIO
+import xhtml2pdf.pisa as pisa
+from markdown import markdown
 from prompt_generator import generate_prompts, sample_prompts
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from dotenv import load_dotenv
@@ -18,17 +27,46 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-#Params and configuration
+########Params and configuration########
 USE_SAMPLE_PROMPTS = True  # Set to False to use input file
+GENERATE_PDFS = True  # Set to False to disable PDF generation
 SAMPLES_PER_CAT = 1  # Number of samples per category
 SEO_TOKENS = "example_SEO_Template.csv"
 
+
 PRIMER = ("You are SEOGPT, your job is to create 300-500 word articles for a knowledge base based on the supplied prompt. "
           "Make sure that your knowledge is general. If you do not know how to fill in the prompt because you do not have "
-          "enough information, return an empty response. The articles Must be SEO optimised, so keyword stuff them. If the prompted question is an impossible task, then state in the article that it is not possible to do the task and suggest another task for the user.The body *must be outputted in Markdown*. Make sure to include as many relevant links in the body as possible to relevant webpages and external content (you must include at least 1 external hu). Output the prompt in the following format: "
+          "enough information, return an empty response. The articles Must be SEO optimised, so keyword stuff them. If the prompted question is an impossible task, then state in the article that it is not possible to do the task and suggest another task for the user.The body *must be outputted in Markdown*. Make sure to include as many relevant links in the body as possible to relevant webpages and external content (you must include at least 1 external hu). Do not include anything that can be misconstrued as investment advice. Output the prompt in the following format: "
           "Category: , Prompt: , Title: , Subtitle: , and Body: . "
-          )
+          "The prompts are all crypto and finance related.\n\n")
+########################################
 
+def create_pdf(title, subtitle, body, output_filename):
+    doc = SimpleDocTemplate(output_filename, pagesize=letter)
+    styles = getSampleStyleSheet()
+    title_style = styles["Heading1"]
+    subtitle_style = styles["Heading2"]
+
+    flowables = []
+
+    flowables.append(Paragraph(title, title_style))
+    flowables.append(Spacer(1, 12))
+    flowables.append(Paragraph(subtitle, subtitle_style))
+    flowables.append(Spacer(1, 12))
+
+    # Convert markdown to HTML
+    body_html = markdown(body)
+
+    # Convert HTML to PDF flowables
+    body_pdf = BytesIO()
+    pisa.CreatePDF(BytesIO(body_html.encode()), body_pdf)
+    body_pdf.seek(0)
+
+    # Add PDF flowables to the document
+    flowables.extend(pisa.getImages(body_pdf))
+
+    doc.build(flowables)
+  
 def fetch_openai_completion_async(model, prompt, temperature, max_tokens, top_p, frequency_penalty, presence_penalty):
     return openai.Completion.create(
         engine=model,
@@ -96,6 +134,13 @@ async def process_prompt(session, writer, category, prompt):
     except Exception as e:
         logger.error(f"Error: Could not process output for prompt '{prompt}'. Output: {output}. Exception: {e}")
 
+    if GENERATE_PDFS:
+        if not os.path.exists("Articles"):
+            os.makedirs("Articles")
+        pdf_filename = f"Articles/{title}.pdf"
+        create_pdf(title, subtitle, body, pdf_filename)
+
+
 
 async def main():
     logger.info("Starting up")
@@ -126,10 +171,11 @@ async def main():
                 reader = csv.reader(csvfile)
                 next(reader)  # skip the header
 
-                tasks = [process_prompt(session, writer, row[0], row[1]) for row in reader]
+                tasks = [process_prompt(session, writer, row[0], row[1]) for row in reader if GENERATE_PDFS]
                 await asyncio.gather(*tasks)
 
     logger.info(f"Finished processing {len(tasks)} prompts in {input_file}. Results saved to {output_file}")
+    
 
 if __name__ == '__main__':
     asyncio.run(main())
